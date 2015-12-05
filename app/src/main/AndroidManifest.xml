@@ -1,12 +1,14 @@
-<manifest package="co.uk.alt236.reflectivedrawableloader.sampleapp"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    package="co.uk.alt236.reflectivedrawableloader.sampleapp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
+        android:name=".SampleAppApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <activity android:name="co.uk.alt236.reflectivedrawableloader.sampleapp.activities.MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

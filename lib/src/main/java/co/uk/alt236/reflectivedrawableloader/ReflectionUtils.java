@@ -31,10 +31,10 @@ class ReflectionUtils {
     protected ReflectionUtils(String appPackageName) {
         Log.d(TAG, "New ReflectionUtils() for '" + appPackageName + "'");
         mPackageName = appPackageName;
-        mClassCache = new HashMap<String, Class<?>>();
+        mClassCache = new HashMap<>();
     }
 
-    private Class<?> getResourceClass(final String suffix) {
+    private Class<?> getResourceClass(final String suffix, boolean reportFailure) {
         if (mClassCache.containsKey(suffix)) {
             return mClassCache.get(suffix);
         } else {
@@ -50,24 +50,29 @@ class ReflectionUtils {
                 }
 
             } catch (ClassNotFoundException e) {
-                Log.e(TAG, "getResourceClass() ClassNotFoundException: " + e.getMessage(), e);
+                if (reportFailure) {
+                    Log.e(TAG, "getResourceClass() ClassNotFoundException: " + e.getMessage(), e);
+                }
             }
 
-            Log.e(TAG, "getResourceClass() Unable to find Sublass: " + suffix);
+            if (reportFailure) {
+                Log.e(TAG, "getResourceClass() Unable to find Subclass: " + suffix);
+            }
 
             return null;
         }
     }
 
-    public void logFields(String resourceLocation) {
+    public void logFields(String resourceLocation, boolean reportFailure) {
         Log.d(TAG, "logFields() Getting Fields for '" + resourceLocation + "' ============= ");
 
         try {
-            final Field[] fields = getResourceClass(resourceLocation).getFields();
+            final Field[] fields = getResourceClass(resourceLocation, reportFailure).getFields();
             for (Field field : fields) {
                 Log.d(TAG, "logFields() Field: '" + field.getName() + "'");
             }
         } catch (NullPointerException e) {
+            Log.e(TAG, "logFields() Error: " + e.getMessage(), e);
         }
     }
 
@@ -94,7 +99,7 @@ class ReflectionUtils {
     private int reflectResource(String resourceLocation, String fieldName, int defaultValue, boolean reportFailure) {
         int error = 0;
         try {
-            final Field field = getResourceClass(resourceLocation).getField(fieldName);
+            final Field field = getResourceClass(resourceLocation, reportFailure).getField(fieldName);
             return field.getInt(null);
         } catch (NoSuchFieldException e) {
             error = 1;
